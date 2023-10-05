@@ -112,15 +112,17 @@ function Board() {
   };
 
   const _clickEdit = async (event: any) => {
-    if (isOpen) closeModal();
-    setId(event.$id);
-    setDay(event.day);
-    setDateString(event.date);
-    setName(event.name);
-    setTime(event.time);
-    setInvitees(event.invitees);
-    setEvent(event);
-    _openModal("Edit Schedule");
+      if (isOpen) closeModal();
+      setTimeout(() => {
+        setId(event.$id);
+        setDay(event.day);
+        setDateString(event.date);
+        setName(event.name);
+        setTime(event.time);
+        setInvitees(event.invitees);
+        setEvent(event);
+        _openModal("Edit Schedule");
+      }, 10);
   };
 
   if (loading) return <div>Loading...</div>;
