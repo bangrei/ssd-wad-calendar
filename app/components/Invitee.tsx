@@ -61,7 +61,7 @@ function Invitee() {
                 </Dialog.Title>
                 <div className="pt-8 font-light w-full flex flex-col gap-4 text-sm">
                   <input
-                    className="flex flex-1 items-center px-4 py-2 outline-none border border-slate-200 rounded-md focus:border-slate-400 font-light"
+                    className="flex flex-1 items-center px-4 py-2 text-slate-800 outline-none border border-slate-200 rounded-md focus:border-slate-400 font-light"
                     type="text"
                     value={message}
                     placeholder="Invitee"
