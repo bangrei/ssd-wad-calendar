@@ -181,7 +181,7 @@ function Modal() {
                 </Dialog.Title>
                 <div className="pt-8 font-light w-full flex flex-col gap-4">
                   <input
-                    className="flex items-center px-4 py-2 outline-none border border-slate-200 rounded-md focus:border-slate-400 font-light"
+                    className="flex items-center px-4 py-2 text-slate-800 outline-none border border-slate-200 rounded-md focus:border-slate-400 font-light"
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -195,17 +195,17 @@ function Modal() {
                     placeholder="Date"
                   /> */}
                   <input
-                    className="flex items-center px-4 py-2 outline-none border border-slate-200 rounded-md focus:border-slate-400 font-light"
+                    className="flex items-center px-4 py-2 text-slate-800 outline-none border border-slate-200 rounded-md focus:border-slate-400 font-light"
                     type="time"
                     value={time}
                     onChange={(e) => _setTime(e.target.value)}
                     placeholder="Time"
                   />
-                  <div className="flex flex-col gap-2 w-full">
-                    <div className="w-full flex items-center justify-between">
+                  <div className="flex flex-col gap-2 w-full text-slate-800">
+                    <div className="w-full flex items-center justify-between text-slate-800">
                       <span>Invitees:</span>
                       <div
-                        className="flex items-center gap-1 text-xs cursor-pointer hover:opacity-60"
+                        className="flex items-center gap-1 text-xs cursor-pointer hover:opacity-60 text-slate-800"
                         onClick={() => _openInvitee()}
                       >
                         <UserPlusIcon width={16} height={16} />
@@ -215,11 +215,11 @@ function Modal() {
                     {Array.from(invitees).map((iv, ivx) => (
                       <div
                         key={ivx}
-                        className="flex items-center relative overflow-hidden w-full"
+                        className="flex items-center relative overflow-hidden w-full text-slate-800"
                       >
                         <input
                           key={iv}
-                          className="flex flex-1 items-center px-4 py-2 outline-none border border-slate-200 rounded-md focus:border-slate-400 font-light"
+                          className="flex flex-1 items-center px-4 py-2 text-slate-800 outline-none border border-slate-200 rounded-md focus:border-slate-400 font-light"
                           type="text"
                           value={iv}
                           disabled

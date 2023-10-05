@@ -2,6 +2,7 @@
 
 import { useBoardStore } from "@/store/Board";
 import { useModalStore } from "@/store/ModalStore";
+import { PlusIcon } from "@heroicons/react/24/outline";
 import React, { useEffect, useState } from "react";
 
 function Board() {
@@ -17,6 +18,7 @@ function Board() {
   const colors = ["bg-cyan-200", "bg-blue-200", "bg-yellow-300"];
 
   const [
+    isOpen,
     title,
     day,
     date,
@@ -33,7 +35,9 @@ function Board() {
     setInvitees,
     setEvent,
     openModal,
+    closeModal,
   ] = useModalStore((state) => [
+    state.isOpen,
     state.title,
     state.day,
     state.date,
@@ -50,6 +54,7 @@ function Board() {
     state.setInvitees,
     state.setEvent,
     state.openModal,
+    state.closeModal,
   ]);
 
   const [loading, board, headers, rows, getBoard] = useBoardStore((state) => [
@@ -72,8 +77,8 @@ function Board() {
     getBoard(currentMonth, currentYear);
   }, [setDate, setMonth, setYear]);
 
-  const tdClick = (item: any, i: any) => {
-    console.log(item);
+  const tdClick = async (item: any, i: any) => {
+    if (item[1].events.length >= 3) return;
     const dt = new Date(item[0]);
     const dd = dt.getDate();
     const mm = dt.getMonth() + 1;
@@ -97,8 +102,17 @@ function Board() {
     _openModal("New Schedule");
   };
 
-  const _clickEdit = (event: any) => {
-    console.log(event);
+  const _tdClick = async (col: any, i: any) => {
+    let item = null;
+    Array.from(col[1].items.entries()).map((it, ix) => {
+      if (ix == i) item = it;
+    });
+    if (!item) return;
+    tdClick(item, i);
+  };
+
+  const _clickEdit = async (event: any) => {
+    if (isOpen) closeModal();
     setId(event.$id);
     setDay(event.day);
     setDateString(event.date);
@@ -139,6 +153,7 @@ function Board() {
                         col[1].items?.size ? "border" : ""
                       }`}
                       key={`${i}-${col[1].day}`}
+                      onClick={() => _tdClick(col, i)}
                     >
                       {
                         <div className="w-full h-full flex flex-col">
@@ -147,21 +162,28 @@ function Board() {
                               ix == i && (
                                 <div className="h-full w-full" key={item[0]}>
                                   <div
-                                    className="w-full font-bold cursor-pointer hover:opacity-50"
-                                    onClick={() => tdClick(item, ix)}
+                                    className={`w-full font-bold ${
+                                      item[1].events.length < 3
+                                        ? "cursor-pointer hover:opacity-50"
+                                        : ""
+                                    }`}
                                   >
-                                    <div
-                                      className={`text-slate-500 mb-2 ${
-                                        new Date(item[0]).getDate() ==
-                                        currentDate
-                                          ? "rounded-full bg-red-100/70 flex flex-col items-center justify-center w-8 h-8"
-                                          : ""
-                                      }`}
-                                    >
+                                    <div className="w-full flex flex-col items-center justify-between">
                                       {new Date(item[0]).getMonth() + 1 ==
-                                      currentMonth
-                                        ? new Date(item[0]).getDate()
-                                        : ""}
+                                        currentMonth && (
+                                        <div className="w-full flex items-center justify-between">
+                                          <span
+                                            className={`text-slate-500 mb-2 ${
+                                              new Date(item[0]).getDate() ==
+                                              currentDate
+                                                ? "rounded-full bg-red-100/70 flex flex-col items-center justify-center w-8 h-8"
+                                                : ""
+                                            }`}
+                                          >
+                                            {new Date(item[0]).getDate()}
+                                          </span>
+                                        </div>
+                                      )}
                                     </div>
                                   </div>
                                   <div className="font-light mt-2 flex flex-col gap-1 w-full">
@@ -174,7 +196,7 @@ function Board() {
                                         key={ev.$date}
                                         onClick={() => _clickEdit(ev)}
                                       >
-                                        <div className="hidden">
+                                        <div className="flex flex-col">
                                           <span className="font-bold text-xs mb-1">
                                             {ev.name}
                                           </span>
