@@ -6,12 +6,6 @@ First, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -20,17 +14,24 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-## Learn More
+## This project is using Tailwind CSS
+This project is using Tailwind CSS, so please make sure that Tailwind CSS already installed. If not, then you may need to install it first.
 
-To learn more about Next.js, take a look at the following resources:
+## Make sure dependecies below are installed:
+- @heroicons/react (npm install @heroicons/react) collection of icons
+- @headlessui/react (npm install @headlessui/react)
+- zustand (npm install zustand) is used for state management
+- appwrite (npm install appwrite) is used for storing data
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Make sure directories below are exist:
+- store, contains 4 files: `AlertStore.ts, Board.ts, ModalStore.ts, InviteeStore.ts`;
+- lib, this directory contains  a file: `service.ts` which is used for APIs integration
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## File .env.local
+Please check and make sure that file `.env.local` contains credentials below:
+- NEXT_PUBLIC_APPWRITE_ENDPOINT
+- NEXT_PUBLIC_APPWRITE_PROJECT_ID
+- NEXT_PUBLIC_APPWRITE_DATABASE_ID
+- NEXT_PUBLIC_APPWRITE_COLLECTION_ID
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+The credentials above are used for Appwrite configurations. Please visit https://appwrite.io/docs for more details.
