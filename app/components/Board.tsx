@@ -198,7 +198,7 @@ function Board() {
                                         key={ev.$date}
                                         onClick={() => _clickEdit(ev)}
                                       >
-                                        <div className="flex flex-col">
+                                        <div className="hidden md:flex md:flex-col">
                                           <span className="font-bold text-xs mb-1">
                                             {ev.name}
                                           </span>
