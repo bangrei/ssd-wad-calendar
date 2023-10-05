@@ -67,6 +67,7 @@ function Modal() {
   const _submit = async (e: React.FormEvent) => {
     try {
       e.preventDefault();
+      if (!name) return _setAlert("Alert", "Name is required!");
       let params = {
         name: name,
         date: `${dateString} ${time}`,
