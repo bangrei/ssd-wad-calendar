@@ -2,19 +2,27 @@
 
 import { useBoardStore } from "@/store/Board";
 import { useModalStore } from "@/store/ModalStore";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  PlusIcon,
+} from "@heroicons/react/24/outline";
 import React, { useEffect, useState } from "react";
 
 function Board() {
-  const today = new Date();
-  const currentMonth = today.getMonth() + 1;
-  const currentYear = today.getFullYear();
-  const currentDate = today.getDate();
-  const dateString = today.toLocaleDateString("en-US", { month: "long" });
-  const currentDay = today.toLocaleDateString("en-US", {
+  let today = new Date();
+  const [currentMonth, setCurrentMonth] = useState(today.getMonth() + 1);
+  const [currentYear, setCurrentYear] = useState(today.getFullYear());
+  const [currentDate, setCurrentDate] = useState(today.getDate());
+  const [dateString, _setDateString] = useState(
+    today.toLocaleDateString("en-US", { month: "long" })
+  );
+  let currentDay = today.toLocaleDateString("en-US", {
     weekday: "long",
   }) as DayOfWeek;
-  const days = new Date(currentYear, currentMonth, 0).getDate();
+  const [days, setDays] = useState(
+    new Date(currentYear, currentMonth, 0).getDate()
+  );
   const colors = ["bg-cyan-200", "bg-blue-200", "bg-yellow-300"];
 
   const [
@@ -112,26 +120,73 @@ function Board() {
   };
 
   const _clickEdit = async (event: any) => {
-      if (isOpen) closeModal();
-      setTimeout(() => {
-        setId(event.$id);
-        setDay(event.day);
-        setDateString(event.date);
-        setName(event.name);
-        setTime(event.time);
-        setInvitees(event.invitees);
-        setEvent(event);
-        _openModal("Edit Schedule");
-      }, 10);
+    if (isOpen) closeModal();
+    setTimeout(() => {
+      setId(event.$id);
+      setDay(event.day);
+      setDateString(event.date);
+      setName(event.name);
+      setTime(event.time);
+      setInvitees(event.invitees);
+      setEvent(event);
+      _openModal("Edit Schedule");
+    }, 10);
   };
 
-  if (loading) return <div>Loading...</div>;
+  const _next = () => {
+    let nextMonth = currentMonth == 12 ? 1 : currentMonth + 1;
+    let nextYear = currentYear + (currentMonth == 12 ? 1 : 0);
+    changeCalendar(nextMonth, nextYear);
+  };
+  const _prev = () => {
+    let prevMonth = currentMonth == 1 ? 12 : currentMonth - 1;
+    let prevYear = currentYear - (currentMonth == 1 ? 1 : 0);
+    changeCalendar(prevMonth, prevYear);
+  };
+  const changeCalendar = (m: any, y: any) => {
+    let cDate = 1;
+    if (m == today.getMonth() + 1) cDate = today.getDate();
+    setCurrentDate(cDate);
+    setCurrentMonth(m);
+    setCurrentYear(y);
+    setDays(new Date(y, m, 0).getDate());
+    _setDateString(
+      new Date(y, m, 0).toLocaleDateString("en-US", {
+        month: "long",
+      })
+    );
+    setDate(1);
+    setMonth(m);
+    setYear(y);
+    getBoard(m, y);
+  };
+
+  if (loading)
+    return (
+      <div className="w-full h-full p-4 flex flex-col items-center justify-center">
+        Loading...
+      </div>
+    );
 
   return (
     <div className="w-full h-full flex flex-col gap-2">
-      <div className="w-full flex flex-col items-center justify-center font-bold text-lg">
-        <span>{dateString}</span>
-        <span>{year?.toString()}</span>
+      <div className="w-full flex items-center justify-between font-bold text-lg">
+        <div
+          className="cursor-pointer hover:opacity-60"
+          onClick={() => _prev()}
+        >
+          <ChevronLeftIcon width={24} height={24} />
+        </div>
+        <div className="flex flex-col items-center justify-center">
+          <span>{dateString}</span>
+          <span>{year?.toString()}</span>
+        </div>
+        <div
+          className="cursor-pointer hover:opacity-60"
+          onClick={() => _next()}
+        >
+          <ChevronRightIcon width={24} height={24} />
+        </div>
       </div>
       <div className="w-full h-full flex flex-col gap-4 text-slate-600">
         <table className="w-full border border-slate-200 bg-white">

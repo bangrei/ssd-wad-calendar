@@ -24,6 +24,14 @@ export const getMySchedules = async (month: any, year: any) => {
     const dtString = `${dt.getFullYear()}-${m > 9 ? m : "0" + m.toString()}-${
       d > 9 ? d : "0" + d.toString()
     }`;
+    let time = dt.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+    if (time.substring(0, 2) == "24") {
+      time = `00:${time.substring(3)}`;
+    }
     if (!columns.get(day))
       columns.set(day, { day: day, items: new Map<string, Item>() });
     const event = {
@@ -34,11 +42,7 @@ export const getMySchedules = async (month: any, year: any) => {
       month: doc.month,
       year: doc.year,
       name: doc.name,
-      time: dt.toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      }),
+      time: time,
       invitees: doc.invitees,
       active: true as Boolean,
     } as Event;

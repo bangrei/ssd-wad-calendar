@@ -57,14 +57,14 @@ function Invitee() {
             >
               <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                 <Dialog.Title className="text-lg font-medium leading-6 text-gray-900 pb-2 border-b border-slate-200">
-                  Add Invitee
+                  Invite
                 </Dialog.Title>
                 <div className="pt-8 font-light w-full flex flex-col gap-4 text-sm">
                   <input
                     className="flex flex-1 items-center px-4 py-2 text-slate-800 outline-none border border-slate-200 rounded-md focus:border-slate-400 font-light"
                     type="text"
                     value={message}
-                    placeholder="Invitee"
+                    placeholder="Invite"
                     onChange={(e) => setMessage(e.target.value)}
                   />
                   <button

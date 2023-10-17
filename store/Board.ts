@@ -13,6 +13,7 @@ interface BoardState {
   headers: Array<DayOfWeek>;
   rows: Array<Event>;
   getBoard: (month: Number, year: Number) => void;
+  setBoard: (board: Board) => void;
   setMonth: (month: Number) => void;
   setYear: (year: Number) => void;
   setHeaders: (headers: Array<DayOfWeek>) => void;
@@ -49,6 +50,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     set({ board });
     set({ loading: false });
   },
+  setBoard: (board: Board) => set({ board: board }),
   setMonth: (month: Number) => set({ month: month }),
   setYear: (year: Number) => set({ year: year }),
   setHeaders: (headers: Array<DayOfWeek>) => set({ headers: headers }),

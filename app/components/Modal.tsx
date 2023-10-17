@@ -77,32 +77,105 @@ function Modal() {
         invitees: invitees,
       };
 
+      let res: any = null;
+
       if (id) {
-        const res = await updateEvent(id!.toString(), params);
+        res = await updateEvent(id!.toString(), params);
         if (res.error) return _setAlert("Error", res.message!.toString());
       } else {
-        const res = await createEvent(params);
+        res = await createEvent(params);
         if (res.error) return _setAlert("Error", res.message!.toString());
       }
-      getBoard(month!, year!);
+      let columns = board.columns;
+      Array.from(columns.entries()).map((col) => {
+        if (col[1].day == day) {
+          Array.from(col[1].items!.entries()).map((item) => {
+            if (item[1].date == dateString) {
+              let exist = item[1].events.findIndex((ev) => {
+                return ev.$date == params.date;
+              });
+              if (exist > -1) {
+                item[1].events[exist] = {
+                  ...item[1].events[exist],
+                  name: params.name,
+                  date: params.date,
+                  invitees: params.invitees,
+                };
+                columns?.get(day)?.items?.set(dateString, {
+                  date: dateString,
+                  events: item[1].events,
+                });
+              } else {
+                let event = {
+                  $id: res.data.$id,
+                  $date: res.data.date,
+                  day: day,
+                  date: dateString,
+                  month: res.data.month,
+                  year: res.data.year,
+                  name: res.data.name,
+                  time: time,
+                  invitees: res.data.invitees,
+                  active: true as Boolean,
+                } as Event;
+                item[1].events.push(event);
+                columns?.get(day)?.items?.set(dateString, {
+                  date: dateString,
+                  events: item[1].events,
+                });
+              }
+            }
+          });
+        }
+      });
+      let newBoard = {
+        total: Math.round(board.total as number) + (id ? 0 : 1),
+        columns: columns,
+      } as Board;
+      setBoard(newBoard);
       _closeModal();
     } catch (error) {
+      console.log(error);
       _setAlert("Error", "Something went wrong!");
     }
   };
 
-  const [month, year, getBoard] = useBoardStore((state) => [
+  const [month, year, board, getBoard, setBoard] = useBoardStore((state) => [
     state.month,
     state.year,
+    state.board,
     state.getBoard,
+    state.setBoard,
   ]);
 
   const _delete = async () => {
     try {
       const res = await removeEvent(id!.toString());
       if (res.error) return _setAlert("Error", res.message!.toString());
-      getBoard(month!, year!);
+
+      let columns = board.columns;
+      Array.from(columns.entries()).map((col) => {
+        if (col[1].day == day) {
+          Array.from(col[1].items!.entries()).map((item) => {
+            if (item[1].date == dateString) {
+              let index = item[1].events.findIndex((ev) => {
+                return ev.$id == id;
+              });
+              item[1].events.splice(index, 1);
+              columns?.get(day)?.items?.set(dateString, {
+                date: dateString,
+                events: item[1].events,
+              });
+            }
+          });
+        }
+      });
+      let newBoard = {
+        total: Math.round(board.total as number) - 1,
+        columns: columns,
+      } as Board;
       _closeModal();
+      setBoard(newBoard);
     } catch (error) {
       _setAlert("Error", "Something went wrong!");
     }
@@ -136,13 +209,19 @@ function Modal() {
     setInvitees(newInvitees);
   };
 
+  const _getDateLong = () => {
+    const t = new Date(dateString);
+    const d = t.toLocaleDateString("en-US", { month: "short" });
+    const dd = dateString.split("-");
+    return `${dd[2]}-${d}-${dd[0]}`;
+  };
+
   useEffect(() => {
     if (!event) return;
     if (event?.$id) setId(event.$id);
     setName(event.name);
     setDateString(event.date);
     setTime(event.time);
-    console.log(event.time);
     setInvitees(event.invitees);
   }, []);
 
@@ -177,8 +256,11 @@ function Modal() {
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel className="w-full max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                <Dialog.Title className="text-lg font-medium leading-6 text-gray-900 pb-2 border-b border-slate-200">
-                  {title} - {day}
+                <Dialog.Title className="flex items-center justify-between leading-6 text-gray-900 pb-2 border-b border-slate-200">
+                  <span className="text-lg font-medium">{title}</span>
+                  <span className="text-xs">
+                    {day}, {_getDateLong()}
+                  </span>
                 </Dialog.Title>
                 <div className="pt-8 font-light w-full flex flex-col gap-4">
                   <input
@@ -186,7 +268,7 @@ function Modal() {
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Name"
+                    placeholder="Event"
                   />
                   {/* <input
                     className="flex items-center px-4 py-2 outline-none border border-slate-200 rounded-md focus:border-slate-400 font-light"
@@ -249,7 +331,7 @@ function Modal() {
                       type="button"
                       onClick={() => _delete()}
                     >
-                      Delete
+                      Remove From Calendar
                     </button>
                   )}
                 </div>

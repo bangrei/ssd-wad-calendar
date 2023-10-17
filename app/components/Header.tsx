@@ -1,3 +1,4 @@
+import { CalendarDaysIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import React from "react";
 
@@ -8,7 +9,10 @@ function Header() {
         href="/"
         className="flex items-center flex-col gap-2 hover:opacity-80"
       >
-        <div className="text-lg font-extrabold">My Calendar</div>
+        <div className="text-xl font-extrabold flex items-center gap-2">
+          <CalendarDaysIcon width={24} height={24} />
+          <span>My Calendar</span>
+        </div>
       </Link>
     </div>
   );
